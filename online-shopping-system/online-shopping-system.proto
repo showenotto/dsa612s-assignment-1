@@ -7,7 +7,7 @@ package online_shopping_system;
 
 service OnlineShoppingSystem {
     //Admin functions
-    rpc add_product(product) returns (uniqueCode);
+    rpc add_product(product) returns (google.protobuf.Int32Value);
     rpc create_users(createUserRequest) returns (createUserResponse);
     rpc update_product(product) returns (product);
     rpc remove_product(google.protobuf.Int32Value) returns (product);
@@ -25,9 +25,6 @@ message product {
     string status = 5;
     string description = 6;
     int32 stock_quantity = 7;
-}
-message uniqueCode {
-    int32 code = 1;
 }
 
 //Cart
