@@ -25,27 +25,42 @@ service "OnlineShoppingSystem" on ep {
     }
 
     remote function list_users(Void value) returns Users|error {
+        Users u = {};
+        return u;
     }
 
     remote function update_product(Product value) returns Product|error {
+        Product u = {};
+        return u;
     }
 
     remote function remove_product(int value) returns Products|error {
+        Products u = {};
+        return u;
     }
 
     remote function list_available_product() returns Products|error {
+        Products u = {};
+        return u;
     }
 
     remote function search_product(string value) returns Product|error {
+        Product u = {};
+        return u;
     }
 
     remote function add_to_cart(Cart value) returns int|error {
+        return 1;
     }
 
     remote function place_order(int value) returns Products|error {
+        Products u = {};
+        return u;
     }
 
     remote function create_users(stream<User, grpc:Error?> clientStream) returns User|error {
+        User u = {};
+        return u;
     }
 }
 
