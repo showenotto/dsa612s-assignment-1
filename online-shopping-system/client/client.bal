@@ -20,20 +20,17 @@ class Profile {
     function setRole(string role){
         if (role == "admin"){
             self.admin = true;
-            //Reset other roles
-            self.customer = false;
+            self.customer = false; //Reset other roles
             self.guest = false;
         }
         if (role == "customer"){
             self.customer = true;
-            //Reset other roles
-            self.admin = false;
+            self.admin = false; //Reset other roles
             self.guest = false;
         }
         if (role == "guest"){
             self.guest = true;
-            //Reset other roles
-            self.admin = false;
+            self.admin = false; //Reset other roles
             self.customer = false;
         }
         
@@ -102,6 +99,10 @@ public function main() returns error? {
     //check create_usersStreamingClient->complete();
     //User? create_usersResponse = check create_usersStreamingClient->receiveUser();
     //io:println(create_usersResponse);
+
+    //Login loginRequest = {username: "ballerina", password: "ballerina"};
+    //User loginResponse = check ep->login(loginRequest);
+    //io:println(loginResponse);
 }
 
 Profile profile = new Profile();

@@ -17,6 +17,8 @@ service OnlineShoppingSystem {
     rpc search_product(google.protobuf.StringValue) returns (Product);
     rpc add_to_cart(Cart) returns (google.protobuf.Int32Value);
     rpc place_order(google.protobuf.Int32Value) returns (Products);
+    //Login
+    rpc login(Login) returns (User);
 }
 
 //Products
@@ -50,6 +52,12 @@ message User {
 }
 message Users {
     repeated User users = 1;
+}
+
+//Login
+message Login {
+    string username = 1;
+    string password = 2;
 }
 
 //Void
