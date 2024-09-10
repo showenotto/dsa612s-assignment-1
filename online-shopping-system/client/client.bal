@@ -124,7 +124,7 @@ function Cmd(string cmd) returns error?{
         "profile" => {
             profile.getProfile();
         }
-        //Admin
+        //Admin commands
         "add_product" => {
             if (profile.admin){
                 io:println("Adding new product...");
@@ -142,6 +142,28 @@ function Cmd(string cmd) returns error?{
             else{
                 io:println("Access denied!");
             }
+        }
+        "create_users" => {
+            //Todo:Implement
+        }
+        "update_product" => {
+            //Todo:Implement
+        }
+        "remove_product" => {
+            //Todo:Implement
+        }
+        //Customer commands
+        "list_available_products" => {
+            //Todo:Implement
+        }
+        "search_product" => {
+            //Todo:Implement
+        }
+        "add_to_cart" => {
+            //Todo:Implement
+        }
+        "place_order" => {
+            //Todo:Implement
         }
     }
 }
