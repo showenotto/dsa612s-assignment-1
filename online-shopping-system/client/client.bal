@@ -117,7 +117,18 @@ function Cmd(string cmd) returns error?{
         //Authentication
         "login" => {
             profile.setRole("admin");
-            profile.setUserName("admin");
+            string username = io:readln("Username: ");
+            string password = io:readln("Password: ");
+            Login loginRequest = {username: username, password: password};
+            User loginResponse = check ep->login(loginRequest);
+            if loginResponse.isAdmin{
+               profile.setRole("admin");
+                profile.setUserName(loginResponse.username);
+            }
+            else{
+                profile.setRole("customer");
+                profile.setUserName(loginResponse.username);
+            }
         }
         "logout" => {
             profile = new Profile();
@@ -134,9 +145,10 @@ function Cmd(string cmd) returns error?{
                 string price = io:readln("Price: ");
                 string status = io:readln("Status: ");
                 string description = io:readln("Description: ");
-                string stock_quantity = io:readln("Stock Quantity: ");
+                string input = io:readln("Stock Quantity: ");
+                int|error stock_quantity = int:fromString(input);
 
-                Product add_productRequest = {sku: "ballerina", code: 0, name: "ballerina", price: "ballerina", status: "ballerina", description: "ballerina", stock_quantity: 1};
+                Product add_productRequest = {sku: sku, code: 0, name: name, price: price, status: status, description: description, stock_quantity: check stock_quantity};
                 int add_productResponse = check ep->add_product(add_productRequest);
                 io:println(add_productResponse);
             }
@@ -145,7 +157,34 @@ function Cmd(string cmd) returns error?{
             }
         }
         "create_users" => {
-            //Todo:Implement
+            if (profile.admin){
+                io:println("Adding a new user...");
+                string input = io:readln("Admin (y/N): ");
+                boolean isAdmin = false;
+                if (input == "y"){
+                    isAdmin = true;
+                }
+                string firstName = io:readln("firstName: ");
+                string lastName = io:readln("lastName: ");
+                string password = io:readln("Password: ");
+                string username = firstName.toLowerAscii().substring(0,1) + lastName.toLowerAscii();
+
+                User create_usersRequest = {id: 0, isAdmin: isAdmin, username: username, firstName: firstName, lastName: lastName, password: password};
+                Create_usersStreamingClient create_usersStreamingClient = check ep->create_users();
+                check create_usersStreamingClient->sendUser(create_usersRequest);
+                check create_usersStreamingClient->complete();
+                User? create_usersResponse = check create_usersStreamingClient->receiveUser();
+                io:println(create_usersResponse);
+            }
+            else{
+                io:println("Access denied!");
+            }
+            
+        }
+        "list_users" => {
+            Void list_usersRequest = {};
+            Users list_usersResponse = check ep->list_users(list_usersRequest);
+            io:println(list_usersResponse);
         }
         "update_product" => {
             //Todo:Implement
@@ -155,7 +194,8 @@ function Cmd(string cmd) returns error?{
         }
         //Customer commands
         "list_available_products" => {
-            //Todo:Implement
+            Products list_available_productResponse = check ep->list_available_product();
+            io:println(list_available_productResponse);
         }
         "search_product" => {
             //Todo:Implement
