@@ -182,16 +182,44 @@ function Cmd(string cmd) returns error?{
             
         }
         "list_users" => {
-            Void list_usersRequest = {};
-            Users list_usersResponse = check ep->list_users(list_usersRequest);
-            io:println(list_usersResponse);
+            if (profile.admin){
+                Void list_usersRequest = {};
+                Users list_usersResponse = check ep->list_users(list_usersRequest);
+                io:println(list_usersResponse);
+            }
+            else{
+                io:println("Access denied!");
+            }
         }
         "update_product" => {
-            //Todo:Implement
+            if (profile.admin){
+                io:println("Updating a product...");
+                string input1 = io:readln("Enter product's code: ");
+                int|error code  = int:fromString(input1);
+                string name = io:readln("Update name: ");
+                string sku = io:readln("Update SKU: ");
+                string price = io:readln("Update price: ");
+                string status = io:readln("Update status: ");
+                string description = io:readln("Update description: ");
+                string input2 = io:readln("Update stock quantity: ");
+                int|error stock_quantity = int:fromString(input2);
+
+                Product update_productRequest = {sku: sku, code: check code, name: name, price: price, status: status, description: description, stock_quantity: check stock_quantity};
+                Product update_productResponse = check ep->update_product(update_productRequest);
+                io:println(update_productResponse);
+            }
+            else{
+                io:println("Access denied!");
+            }
         }
         "remove_product" => {
-            //Todo:Implement
+            io:println("Removing product from inventory...");
+            string input = io:readln("Enter product code: ");
+            int code = check int:fromString(input);
+            Products remove_productResponse = check ep->remove_product(code);
+            io:println(remove_productResponse);
         }
+
         //Customer commands
         "list_available_products" => {
             Products list_available_productResponse = check ep->list_available_product();
