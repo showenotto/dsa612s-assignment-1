@@ -226,7 +226,16 @@ function Cmd(string cmd) returns error?{
             io:println(list_available_productResponse);
         }
         "search_product" => {
-            //Todo:Implement
+            string sku = io:readln("Enter the SKU of the product: ");
+            Product|error search_productResponse = ep->search_product(sku);
+        if (search_productResponse is Product) {
+        io:println("Product found:");
+        io:println(search_productResponse);
+        }  
+        else {
+        io:println("Product not found or unavailable.");
+        }
+
         }
         "add_to_cart" => {
             //Todo:Implement
