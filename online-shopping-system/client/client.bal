@@ -214,11 +214,22 @@ function Cmd(string cmd) returns error?{
     } else {
         io:println("Access denied! You must be a customer to add products to cart.");
     }
+           }
+       "place_order" => {
+    if (profile.customer) {
+        io:println("Placing order...");
+        string userId = profile.username;
+        // Retrieve cart ID from user
+        string cartId = io:readln("Enter your cart ID: ");
+        // Call the place_order endpoint
+        Order placeOrderResponse = check ep->place_order(userId, cartId);
+        io:println("Order placed successfully. Order ID: " + placeOrderResponse.orderId);
+    } else {
+        io:println("Access denied! You must be a customer to place an order.");
+    }
 }
-        }
-        "place_order" => {
-            //Todo:Implement
-        }
+
+           }   
     }
 
 
