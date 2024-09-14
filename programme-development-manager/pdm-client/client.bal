@@ -87,7 +87,7 @@ function Cmd(string cmd) returns error?{
 
         "list_all_programmes" => {
             table<Programme> programmes = check pdm_client->/all;
-            io:println("All programmes");
+            io:println("All programmes!");
             io:println(programmes);
         }
     }
