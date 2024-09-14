@@ -1,17 +1,32 @@
 import ballerina/http;
 
-# A service representing a network-accessible API
-# bound to port `9090`.
-service / on new http:Listener(9090) {
+type Course readonly & record {
+    string name;
+    string code;
+    string nqf;
 
-    # A resource for generating greetings
-    # + name - name as a string or nil
-    # + return - string name with hello message or error
-    resource function get greeting(string? name) returns string|error {
+};
+
+type Programme readonly & record{
+    string code;
+    string nqf;
+    string faculty;
+    string department;
+    string qualification_title;
+    string registration_date;
+    Course[] courses;
+};
+
+service / on new http:Listener(9090) {
+    table<Programme> key(code) programmes = table [];
+    resource function post add(Programme programme) returns Programme|error {
         // Send a response back to the caller.
-        if name is () {
-            return error("name should not be empty!");
+        self.programmes.add(programme);
+        return programme;
+    }
+    resource function get all() returns table<Programme> {
+        lock {
+            return self.programmes;
         }
-        return string `Hello, ${name}`;
     }
 }
