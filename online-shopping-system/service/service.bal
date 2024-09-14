@@ -97,9 +97,18 @@ service "OnlineShoppingSystem" on ep {
         return products;
     }
 
-    remote function search_product(string value) returns Product|error {
-        Product u = {};
-        return u;
+    remote function search_product(string sku) returns Product|error {
+    lock {
+        // Iterate over the products using foreach and check for the matching SKU
+        self.products.forEach(function(Product product) {
+            if product.sku == sku {
+                return product;
+            }
+        });
+    }
+    string err = "Product with SKU '" + sku + "' not found!";
+    return error(err);
+
     }
 
     remote function add_to_cart(Cart value) returns int|error {
