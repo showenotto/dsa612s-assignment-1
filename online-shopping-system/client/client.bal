@@ -203,14 +203,24 @@ function Cmd(string cmd) returns error?{
         }
 
         }
-        "add_to_cart" => {
-            //Todo:Implement
+           "add_to_cart" => {
+    if (profile.customer) {
+        io:println("Adding product to cart...");
+        string userId = profile.username;
+        string sku = io:readln("Enter the SKU of the product: ");
+        CartAddRequest cartAddRequest = {userId: userId, sku: sku};
+        int cartAddResponse = check ep->add_to_cart(cartAddRequest);
+        io:println("Product added to cart successfully. Cart ID: " + cartAddResponse);
+    } else {
+        io:println("Access denied! You must be a customer to add products to cart.");
+    }
+}
         }
         "place_order" => {
             //Todo:Implement
         }
     }
-}
+
 
 
 function help(){
