@@ -87,7 +87,8 @@ function Cmd(string cmd) returns error?{
 
         "list_all_programmes" => {
             table<Programme> programmes = check pdm_client->/all;
-            io:println("All programmes!");
+            io:println("All programmes");
+            io:println("---------------");
             io:println(programmes);
         }
         "update_programme" => {
@@ -119,6 +120,29 @@ function Cmd(string cmd) returns error?{
             Programme programme_response = check pdm_client->/update.post(programme); 
             io:println(programme_response);
         }
+        "get_programme" => {
+            io:println("Retrieving programme...");
+            string code = io:readln("Code: ");
+            Programme programme = check pdm_client->/programmes/[code];
+            io:println(programme);
+        }
+        "get_programme_faculty" => {
+            io:println("Retrieving programme with faculty...");
+            string faculty = io:readln("Faculty: ");
+            Programme programme = check pdm_client->/programmes(faculty=faculty);
+            io:println(programme);
+        }
+        "delete_programme" => {
+            io:println("Deleting programme...");
+            string code = io:readln("Code: ");
+            Programme programme = check pdm_client->/delete(code=code);
+            io:println(programme.toJsonString());
+        }
+        "list_all_programmes_due" => {
+            io:println("Retrieving all programs which are due...");
+            Programme[] programme = check pdm_client->/programmes_due;
+            io:println(programme);
+        }
     }
 }
 
@@ -129,6 +153,7 @@ function help(){
     io:println("list_all_programmes");
     io:println("update_programme");
     io:println("get_programme");
+    io:println("get_programme_faculty");
     io:println("delete_programme");
     io:println("list_all_programmes_due\n");
 }
