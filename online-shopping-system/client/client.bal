@@ -2,16 +2,22 @@ import ballerina/io;
 
 //Created Profile class for User Session Management
 class Profile {
+    string id;
     string username;
     boolean admin;
     boolean customer;
     boolean guest;
 
      function init() {
+        self.id = "Guest";
         self.username = "Guest";
         self.admin = false;
         self.customer = false;
         self.guest = true;
+    }
+
+    function setId(string id){
+        self.id = id;
     }
 
     function setUserName(string username){
@@ -35,6 +41,7 @@ class Profile {
         }
         
     }
+
     function getProfile () {
         io:println("Username: " + self.username);
         if (self.admin){
@@ -89,13 +96,13 @@ function Cmd(string cmd) returns error?{
             string password = io:readln("Password: ");
             Login loginRequest = {username: username, password: password};
             User loginResponse = check ep->login(loginRequest);
+            profile.setId(loginResponse.id.toString());
+            profile.setUserName(loginResponse.username);
             if loginResponse.isAdmin{
-               profile.setRole("admin");
-                profile.setUserName(loginResponse.username);
+                profile.setRole("admin");
             }
             else{
                 profile.setRole("customer");
-                profile.setUserName(loginResponse.username);
             }
         }
         "logout" => {
@@ -207,34 +214,33 @@ function Cmd(string cmd) returns error?{
         "add_to_cart" => {
             if (profile.customer) {
                 io:println("Adding product to cart...");
-                string userId = profile.username;
+                string userId = profile.id;
                 string sku = io:readln("Enter the SKU of the product: ");
                 Cart cartAddRequest = {userId: userId, sku: sku};
                 int cartAddResponse = check ep->add_to_cart(cartAddRequest);
-                io:println("Product added to cart successfully. Cart ID: " + cartAddResponse.toString());
+                io:println("Product added to cart successfully. User ID: " + cartAddResponse.toString());
                 }
             else {
                 io:println("Access denied! You must be a customer to add products to cart.");
             }
         }
        "place_order" => {
-    if (profile.customer) {
-        io:println("Placing order...");
-        string userId = profile.username;
-        // Retrieve cart ID from user
-        string cartId = io:readln("Enter your cart ID: ");
-        // Call the place_order endpoint
-        //Order placeOrderResponse = check ep->place_order(userId, cartId);
-        Products placeOrderResponse = check ep->place_order(check int:fromString(cartId));
-        //io:println("Order placed successfully. Order ID: " + placeOrderResponse.orderId);
-        io:println("Order placed successfully. Order ID: " + placeOrderResponse.toString());
-    } else {
-        io:println("Access denied! You must be a customer to place an order.");
+            if (profile.customer) {
+                io:println("Placing order...");
+                string userId = profile.id;
+                // Call the place_order endpoint
+                //Order placeOrderResponse = check ep->place_order(userId, cartId);
+                Order placeOrderResponse = check ep->place_order(userId);
+                //io:println("Order placed successfully. Order ID: " + placeOrderResponse.orderId);
+                io:println("Order placed successfully!");
+                io:println(placeOrderResponse.toString());
+            }
+            else {
+                io:println("Access denied! You must be a customer to place an order.");
+            }
+        }
     }
 }
-
-           }   
-    }
 
 
 

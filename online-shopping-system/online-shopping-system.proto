@@ -16,7 +16,7 @@ service OnlineShoppingSystem {
     rpc list_available_product(google.protobuf.Empty) returns (Products); 
     rpc search_product(google.protobuf.StringValue) returns (Product);
     rpc add_to_cart(Cart) returns (google.protobuf.Int32Value);
-    rpc place_order(google.protobuf.Int32Value) returns (Products);
+    rpc place_order(google.protobuf.StringValue) returns (Order);
     //Login
     rpc login(Login) returns (User);
 }
@@ -35,10 +35,14 @@ message Products {
     repeated Product products = 1; //Returns Array of 'Product' object
 }
 
-//Cart
 message Cart {
     string userId = 1;
     string sku = 2;
+}
+
+message Order{
+    string userId = 1;
+    Products products = 2;
 }
 
 //Users

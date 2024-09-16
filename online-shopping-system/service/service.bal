@@ -8,8 +8,9 @@ service "OnlineShoppingSystem" on ep {
     private map<Product> products = {};
     private map<Cart> carts = {};
     private map<User> users = {};
+    private map<Order> orders = {};
     private int code = -1;
-    private int id = -1;
+    private int id = 0;
     //Admin
     private User admin = {firstName: "Showen", lastName: "Otto", username: "sotto", password: "password", isAdmin:true};
 
@@ -116,13 +117,26 @@ service "OnlineShoppingSystem" on ep {
         }
     }
 
-    remote function add_to_cart(Cart value) returns int|error {
-        return 1;
+    remote function add_to_cart(Cart cart) returns int|error {
+        io:println(cart);
+        self.carts[cart.userId] = cart;
+        return int:fromString(cart.userId);
     }
 
-    remote function place_order(int value) returns Products|error {
-        Products u = {};
-        return u;
+    remote function place_order(string userId) returns Order {
+        Order Order = {};
+        Product[] productList = [];
+        self.carts.forEach(function (Cart cart){
+            self.products.forEach(function (Product product){
+                if product.sku == cart.sku{
+                    productList.push(product);
+                }
+            });
+        });
+        Order.userId = userId;
+        Order.products = {products: productList};
+        self.orders[Order.userId.toString()] = Order;
+        return Order;
     }
 
     
