@@ -72,6 +72,8 @@ public function main() returns error? {
 }
 
 Profile profile = new Profile();
+
+
 function Cmd(string cmd) returns error?{
     match cmd {
         "help" => {
@@ -194,27 +196,27 @@ function Cmd(string cmd) returns error?{
         "search_product" => {
             string sku = io:readln("Enter the SKU of the product: ");
             Product|error search_productResponse = ep->search_product(sku);
-        if (search_productResponse is Product) {
-        io:println("Product found:");
-        io:println(search_productResponse);
-        }  
-        else {
-        io:println("Product not found or unavailable.");
+            if (search_productResponse is Product) {
+                io:println("Product found:");
+                io:println(search_productResponse);
+            }  
+            else {
+                io:println("Product not found or unavailable.");
+            }
         }
-
+        "add_to_cart" => {
+            if (profile.customer) {
+                io:println("Adding product to cart...");
+                string userId = profile.username;
+                string sku = io:readln("Enter the SKU of the product: ");
+                Cart cartAddRequest = {userId: userId, sku: sku};
+                int cartAddResponse = check ep->add_to_cart(cartAddRequest);
+                io:println("Product added to cart successfully. Cart ID: " + cartAddResponse.toString());
+                }
+            else {
+                io:println("Access denied! You must be a customer to add products to cart.");
+            }
         }
-           "add_to_cart" => {
-    if (profile.customer) {
-        io:println("Adding product to cart...");
-        string userId = profile.username;
-        string sku = io:readln("Enter the SKU of the product: ");
-        CartAddRequest cartAddRequest = {userId: userId, sku: sku};
-        int cartAddResponse = check ep->add_to_cart(cartAddRequest);
-        io:println("Product added to cart successfully. Cart ID: " + cartAddResponse);
-    } else {
-        io:println("Access denied! You must be a customer to add products to cart.");
-    }
-           }
        "place_order" => {
     if (profile.customer) {
         io:println("Placing order...");
@@ -222,8 +224,10 @@ function Cmd(string cmd) returns error?{
         // Retrieve cart ID from user
         string cartId = io:readln("Enter your cart ID: ");
         // Call the place_order endpoint
-        Order placeOrderResponse = check ep->place_order(userId, cartId);
-        io:println("Order placed successfully. Order ID: " + placeOrderResponse.orderId);
+        //Order placeOrderResponse = check ep->place_order(userId, cartId);
+        Products placeOrderResponse = check ep->place_order(check int:fromString(cartId));
+        //io:println("Order placed successfully. Order ID: " + placeOrderResponse.orderId);
+        io:println("Order placed successfully. Order ID: " + placeOrderResponse.toString());
     } else {
         io:println("Access denied! You must be a customer to place an order.");
     }

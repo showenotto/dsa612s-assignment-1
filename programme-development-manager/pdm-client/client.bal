@@ -63,6 +63,7 @@ function Cmd(string cmd) returns error?{
             string qualification_title = io:readln("Qualification's Title:");
             string registration_date = io:readln("Registrations Date:");
             string input = io:readln("Number of courses: ");
+            int number_of_course = check int:fromString(input);
             Programme programme = {
                 code: code,
                 nqf: nqf,
@@ -72,7 +73,6 @@ function Cmd(string cmd) returns error?{
                 registration_date: registration_date,
                 courses: []
             };
-            int number_of_course = check int:fromString(input);
             foreach int i in 0...number_of_course-1 {
                 io:println("[" + (i+1).toString() + "/" + number_of_course.toString() + "] Adding course...");
                 string name = io:readln("Name: ");
@@ -89,6 +89,35 @@ function Cmd(string cmd) returns error?{
             table<Programme> programmes = check pdm_client->/all;
             io:println("All programmes!");
             io:println(programmes);
+        }
+        "update_programme" => {
+            string code = io:readln("Code: ");
+            string nqf = io:readln("NQF:");
+            string faculty = io:readln("Faculty:");
+            string department = io:readln("Department:");
+            string qualification_title = io:readln("Qualification's Title:");
+            string registration_date = io:readln("Registrations Date:");
+            string input = io:readln("Number of courses: ");
+            int number_of_course = check int:fromString(input);
+             Programme programme = {
+                code: code,
+                nqf: nqf,
+                faculty: faculty,
+                department: department,
+                qualification_title: qualification_title,
+                registration_date: registration_date,
+                courses: []
+            };
+            foreach int i in 0...number_of_course-1 {
+                io:println("[" + (i+1).toString() + "/" + number_of_course.toString() + "] Adding course...");
+                string name = io:readln("Name: ");
+                string course_code = io:readln("Code: ");
+                string course_nqf = io:readln("NQF: ");
+                Course course = {name:name, code:course_code, nqf:course_nqf};
+                programme.courses.push(course);
+            } 
+            Programme programme_response = check pdm_client->/update.post(programme); 
+            io:println(programme_response);
         }
     }
 }
