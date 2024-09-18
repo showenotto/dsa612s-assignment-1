@@ -1,0 +1,184 @@
+openapi: 3.0.0
+info:
+  title: Programme Development Unit API
+  description: A RESTful API for managing Programme development with CRUD operations.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Local server
+
+paths:
+  /programmes:
+    post:
+      summary: Add a new programme
+      description: Add a new programme record.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                age:
+                  type: integer
+                course:
+                  type: string
+      responses:
+        '201':
+          description: Programme added successfully
+        '400':
+          description: Invalid input
+
+    get:
+      summary: Retrieve all programmes
+      description: Retrieve a list of all programmes within the Programme Development Unit.
+      responses:
+        '200':
+          description: List of programmes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    age:
+                      type: integer
+                    course:
+                      type: string
+
+  /programmes/{codes}:
+    get:
+      summary: Retrieve a programme by code
+      description: Retrieve the details of a specific programme by its code.
+      parameters:
+        - in: path
+          name: codes
+          required: true
+          schema:
+            type: integer
+          description: The programme code
+      responses:
+        '200':
+          description: Programme details retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  age:
+                    type: integer
+                  course:
+                    type: string
+        '404':
+          description: Programme not found
+
+    put:
+      summary: Update a programme's information by code
+      description: Update an existing programme's information according to the programme code.
+      parameters:
+        - in: path
+          name: codes
+          required: true
+          schema:
+            type: integer
+          description: The programme code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                age:
+                  type: integer
+                course:
+                  type: string
+      responses:
+        '200':
+          description: Programme updated successfully
+        '404':
+          description: Programme not found
+
+    delete:
+      summary: Delete a programme by code
+      description: Delete a programme's record by its code.
+      parameters:
+        - in: path
+          name: codes
+          required: true
+          schema:
+            type: integer
+          description: The programme code
+      responses:
+        '204':
+          description: Programme deleted successfully
+        '404':
+          description: Programme not found
+
+  /programmes/review:
+    get:
+      summary: Retrieve programmes due for review
+      description: Retrieve all the programmes that are due for review.
+      responses:
+        '200':
+          description: List of programmes due for review
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    age:
+                      type: integer
+                    course:
+                      type: string
+
+  /programmes/faculty/{facultyId}:
+    get:
+      summary: Retrieve programmes by faculty
+      description: Retrieve all programmes that belong to the same faculty.
+      parameters:
+        - in: path
+          name: facultyId
+          required: true
+          schema:
+            type: integer
+          description: The ID of the faculty
+      responses:
+        '200':
+          description: List of programmes belonging to the faculty
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    age:
+                      type: integer
+                    course:
+                      type: string
